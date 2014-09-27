@@ -1,6 +1,6 @@
 - if current_user
-	%h2 settings
 	%form.form-inline{action:'/settings',method:'POST'}
+		%label settings
 		%input{type:'hidden',name:'_method',value:'PUT'}
 		- (0..23).each do |i|
 			- if current_user.hours && current_user.hours.include?(i)
@@ -16,20 +16,25 @@
 		times
 		.form-group
 			%button.btn.btn-default update
-	%h2 tweets
+	%hr
 	%form.form-inline{action:'/',method:'POST'}
-		.form-group
-			%input.form-control{type:'text',name:'body'}
-		.form-group
-			%button.btn.btn-default enqueue
+		%input.form-control#tweet{type:'text',name:'body',style:'width:80%'}
+		%button.btn.btn-default enqueue
+		%span.badge#count 0
 	%ul.list-group
 	- current_user.tweets.desc(:created_at).each do |tweet|
 		%li.list-group-item
 			- if tweet.published
 				%a{href:"https://twitter.com/#{current_user.screen_name}/status/#{tweet.status_id}"}= tweet.body
-				%span.badge= 'published'
 			- else
 				= tweet.body
-				%form.form-inline{action:"/#{tweet.id}",method:'POST'}
-					%input{type:'hidden',name:'_method',value:'DELETE'}
-					%button.btn.btn-default.btn-xs.pull-right#delete delete
+			%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
+				%input{type:'hidden',name:'_method',value:'DELETE'}
+				%button.btn.btn-default.btn-xs#delete delete
+			- if tweet.published
+				%span.badge= "published at #{tweet.published_at}"
+:coffeescript
+	$('#tweet')
+		.focus()
+		.on 'keyup', ()->
+			$('#count').html $('#tweet').val().length
