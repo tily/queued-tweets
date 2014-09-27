@@ -9,6 +9,7 @@ class User
 	field :hours, type: Array
 	field :times, type: Integer
 	field :time_zone, type: String
+	validates :screen_name, inclusion: {in: ENV['ALLOWED_USERS'].split(/,/)} if ENV['ALLOWED_USERS']
 	has_many :tweets
 	def self.create_with_omniauth(auth)
 		create! do |account|
