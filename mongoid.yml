@@ -1,0 +1,10 @@
+development:
+  sessions:
+    default:
+      database: queued-tweets_development
+      hosts:
+        - localhost:27017
+production:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOHQ_URL'] %>
