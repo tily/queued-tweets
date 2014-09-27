@@ -18,7 +18,7 @@
 		.form-group
 			%button.btn.btn-default update
 	%hr
-	- if @tweet && @tweet.errors
+	- if @tweet && !@tweet.errors.empty?
 		.alert.alert-danger.alert-dismissible
 			%ul
 				- @tweet.errors.each do |k, v|
