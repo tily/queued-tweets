@@ -18,6 +18,11 @@
 		.form-group
 			%button.btn.btn-default update
 	%hr
+	- if @tweet && @tweet.errors
+		.alert.alert-danger.alert-dismissible
+			%ul
+				- @tweet.errors.each do |k, v|
+					%li= "#{k} #{v}"	
 	%form.form-inline{action:'/',method:'POST'}
 		%input.form-control#tweet{type:'text',name:'body',style:'width:80%'}
 		%button.btn.btn-default enqueue
