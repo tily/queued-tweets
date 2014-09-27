@@ -36,15 +36,11 @@ get '/' do
 end
 
 post '/' do
-	tweet = current_user.tweets.create(
+	@tweet = current_user.tweets.create(
 		body: params[:body],
 		published: false
 	)
-	if tweet
-		redirect '/'
-	else
-		haml :top
-	end
+	haml :top
 end
 
 put '/settings' do
