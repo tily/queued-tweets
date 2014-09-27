@@ -1,19 +1,20 @@
 - if current_user
 	%form.form-inline{action:'/settings',method:'POST'}
 		%label settings
-		%input{type:'hidden',name:'_method',value:'PUT'}
-		- (0..23).each do |i|
-			- if current_user.hours && current_user.hours.include?(i)
-				%input{type:'checkbox',name:"hours[#{i}]",checked:'true'}= i
-			- else
-				%input{type:'checkbox',name:"hours[#{i}]"}= i
 		%select{name:'times'}
 			- (1..50).each do |i|
 				- if current_user.times == i
 					%option{value:i,selected:'true'}= i
 				- else
 					%option{value:i}= i
-		times
+		times at
+		%input{type:'hidden',name:'_method',value:'PUT'}
+		- (0..23).each do |i|
+			- if current_user.hours && current_user.hours.include?(i)
+				%input{type:'checkbox',name:"hours[#{i}]",checked:'true'}= i
+			- else
+				%input{type:'checkbox',name:"hours[#{i}]"}= i
+		= ':00'
 		.form-group
 			%button.btn.btn-default update
 	%hr
