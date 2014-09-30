@@ -16,7 +16,6 @@
 				%input{type:'checkbox',name:"hours[#{i}]"}= i
 		= ':00'
 		.form-group
-			- # %button.btn.btn-default update
 			%input.btn.btn-default{type:'submit',value:'update'}
 	%hr
 	- if @tweet && !@tweet.errors.empty?
@@ -26,7 +25,6 @@
 					%li= "#{k} #{v}"	
 	%form.form-inline{action:'/',method:'POST'}
 		%input.form-control#tweet{type:'text',name:'body',style:'width:80%'}
-		- # %button.btn.btn-default enqueue
 		%input.btn.btn-default{type:'submit',value:'enqueue'}
 		%span.badge#count 0
 	%ul.list-group
@@ -38,7 +36,6 @@
 				= tweet.body
 			%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
 				%input{type:'hidden',name:'_method',value:'DELETE'}
-				- # %button.btn.btn-default.btn-xs#delete delete
 				%input.btn.btn-default{type:'submit',value:'delete'}
 			- if tweet.published
 				%span.badge= "published at #{tweet.published_at}"
