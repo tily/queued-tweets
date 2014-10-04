@@ -25,12 +25,11 @@
 					%li= "#{k} #{v}"	
 	%form.form-inline{action:'/',method:'POST'}
 		%textarea.form-control#tweet{type:'text',name:'body',style:'width:80%'}
+		%span.badge.count 0
 		%input.btn.btn-default{type:'submit',value:'enqueue'}
-		%span.badge#count 0
 	%table.table
 		%tr
 			%th body
-			%th operations
 			%th dates
 		- current_user.tweets.asc(:published).desc(:updated_at).each do |tweet|
 			%tr
@@ -38,11 +37,17 @@
 					- if tweet.published
 						%a{href:"https://twitter.com/#{current_user.screen_name}/status/#{tweet.status_id}"}= tweet.body
 					- else
+						%a.toggle-edit{href:'#'} edit
 						- if tweet.visible
-							!= tweet.body.gsub(/\n/, '<br>')
+							.tweet-body!= tweet.body.gsub(/\n/, '<br>')
 						- else
-							.well!= tweet.body.gsub(/\n/, '<br>')
-				%td
+							.tweet-body.well!= tweet.body.gsub(/\n/, '<br>')
+						.tweet-edit{style:'display:none'}
+							%form.form-inline{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
+								%input{type:'hidden',name:'_method',value:'PUT'}
+								%textarea.form-control{name:'body',style:'width:100%',rows:5}= tweet.body
+								%span.badge.count 0
+								%input.btn.btn-default{type:'submit',value:'update'}
 					%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
 						%input{type:'hidden',name:'_method',value:'DELETE'}
 						%input.btn.btn-default{type:'submit',value:'delete'}
@@ -56,7 +61,13 @@
 						%li= "updated at: #{tweet.updated_at}"
 						%li= "published at: #{tweet.published_at}"
 :coffeescript
-	$('#tweet')
+	$('textarea')
 		.focus()
 		.on 'keyup', ()->
-			$('#count').html $('#tweet').val().length
+			$(this).next('.count').html $(this).val().length
+	$('.toggle-edit')
+		.on 'click', (e)->
+			e.preventDefault()	
+			$(this).next('.tweet-body').toggle()
+			$(this).next().next('.tweet-edit').toggle()
+			$(this).html if $(this).html() == 'edit' then 'cancel' else 'edit'
