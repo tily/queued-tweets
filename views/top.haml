@@ -32,7 +32,7 @@
 			%th body
 			%th operations
 			%th dates
-		- current_user.tweets.desc(:updated_at).each do |tweet|
+		- current_user.tweets.asc(:published).desc(:updated_at).each do |tweet|
 			%tr
 				%td
 					- if tweet.published
