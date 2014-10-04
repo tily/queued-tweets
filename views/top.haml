@@ -46,6 +46,10 @@
 					%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
 						%input{type:'hidden',name:'_method',value:'DELETE'}
 						%input.btn.btn-default{type:'submit',value:'delete'}
+					%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
+						%input{type:'hidden',name:'_method',value:'PUT'}
+						%input{type:'hidden',name:'visible',value:(!tweet.visible).to_s}
+						%input.btn.btn-default{type:'submit',value:'toggle visibility'}
 				%td
 					%ul
 						%li= "created at: #{tweet.created_at}"
