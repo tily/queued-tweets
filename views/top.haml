@@ -27,39 +27,32 @@
 		%textarea.form-control#tweet{type:'text',name:'body',style:'width:80%'}
 		%span.badge.count 0
 		%input.btn.btn-default{type:'submit',value:'enqueue'}
-	%table.table
-		%tr
-			%th body
-			%th dates
-		- current_user.tweets.asc(:published).desc(:updated_at).each do |tweet|
-			%tr
-				%td
-					- if tweet.published
-						%a{href:"https://twitter.com/#{current_user.screen_name}/status/#{tweet.status_id}"}= tweet.body
-					- else
-						%a.toggle-edit{href:'#'} edit
-						- if tweet.visible
-							.tweet-body!= tweet.body.gsub(/\n/, '<br>')
-						- else
-							.tweet-body.well!= tweet.body.gsub(/\n/, '<br>')
-						.tweet-edit{style:'display:none'}
-							%form.form-inline{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
-								%input{type:'hidden',name:'_method',value:'PUT'}
-								%textarea.form-control{name:'body',style:'width:100%',rows:5}= tweet.body
-								%span.badge.count 0
-								%input.btn.btn-default{type:'submit',value:'update'}
-					%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
+	%ul.list-group{style:'padding-top:1.0em'}
+		- current_user.tweets.asc(:published).desc(:created_at).each do |tweet|
+			%li.list-group-item{style:'padding-bottom:2.0em;'}
+				- if !tweet.published
+					%form.form-inline{action:"/#{tweet.id}",method:'POST',style:'padding:0;display:inline'}
 						%input{type:'hidden',name:'_method',value:'DELETE'}
-						%input.btn.btn-default{type:'submit',value:'delete'}
-					%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
+						%input.btn.btn-default.btn-xs{type:'submit',value:'delete'}
+					%form.form-inline{action:"/#{tweet.id}",method:'POST',style:'padding:0;display:inline'}
 						%input{type:'hidden',name:'_method',value:'PUT'}
 						%input{type:'hidden',name:'visible',value:(!tweet.visible).to_s}
-						%input.btn.btn-default{type:'submit',value:'toggle visibility'}
-				%td
-					%ul
-						%li= "created at: #{tweet.created_at}"
-						%li= "updated at: #{tweet.updated_at}"
-						%li= "published at: #{tweet.published_at}"
+						%input.btn.btn-default.btn-xs{type:'submit',value:'toggle visibility'}
+					%a.toggle-edit{href:'#'} edit
+				- if tweet.published
+					%a{href:"https://twitter.com/#{current_user.screen_name}/status/#{tweet.status_id}"}= tweet.body
+				- else
+					- if tweet.visible
+						.tweet-body!= tweet.body.gsub(/\n/, '<br>')
+					- else
+						.tweet-body.well!= tweet.body.gsub(/\n/, '<br>')
+					.tweet-edit{style:'display:none'}
+						%form.form-inline{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
+							%input{type:'hidden',name:'_method',value:'PUT'}
+							%textarea.form-control{name:'body',style:'width:100%',rows:5}= tweet.body
+							%span.badge.count 0
+							%input.btn.btn-default{type:'submit',value:'update'}
+				%span.badge.pull-right #{tweet.created_at.strftime('%Y-%m-%d %H:%M:%S')} - #{tweet.updated_at.strftime('%Y-%m-%d %H:%M:%S')}
 :coffeescript
 	$('textarea')
 		.focus()
