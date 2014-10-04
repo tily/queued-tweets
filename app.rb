@@ -50,6 +50,14 @@ put '/settings' do
 	redirect '/'
 end
 
+put '/:id' do
+	tweet = current_user.tweets.find(params[:id])
+	tweet.body = params[:body] if params[:body]
+	tweet.visible = params[:visible] if params[:visible]
+	tweet.save
+	redirect '/'
+end
+
 delete '/:id' do
 	tweet = current_user.tweets.find(params[:id])
 	tweet.destroy
