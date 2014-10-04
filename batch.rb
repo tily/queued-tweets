@@ -19,7 +19,7 @@ def work
 			config.access_token        = user.token
 			config.access_token_secret = user.secret
 		end
-		tweets = user.tweets.asc(:created_at).where(published: false).limit(user.times || 5)
+		tweets = user.tweets.asc(:created_at).where(published: false, visible: true).limit(user.times || 5)
 		tweets.each do |tweet|
 			result = twitter.update(tweet.body)
 			tweet.published_at = Time.now
