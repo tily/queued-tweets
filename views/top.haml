@@ -24,21 +24,33 @@
 				- @tweet.errors.each do |k, v|
 					%li= "#{k} #{v}"	
 	%form.form-inline{action:'/',method:'POST'}
-		%input.form-control#tweet{type:'text',name:'body',style:'width:80%'}
+		%textarea.form-control#tweet{type:'text',name:'body',style:'width:80%'}
 		%input.btn.btn-default{type:'submit',value:'enqueue'}
 		%span.badge#count 0
-	%ul.list-group
-	- current_user.tweets.desc(:created_at).each do |tweet|
-		%li.list-group-item
-			- if tweet.published
-				%a{href:"https://twitter.com/#{current_user.screen_name}/status/#{tweet.status_id}"}= tweet.body
-			- else
-				= tweet.body
-			%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
-				%input{type:'hidden',name:'_method',value:'DELETE'}
-				%input.btn.btn-default{type:'submit',value:'delete'}
-			- if tweet.published
-				%span.badge= "published at #{tweet.published_at}"
+	%table.table
+		%tr
+			%th body
+			%th operations
+			%th dates
+		- current_user.tweets.desc(:updated_at).each do |tweet|
+			%tr
+				%td
+					- if tweet.published
+						%a{href:"https://twitter.com/#{current_user.screen_name}/status/#{tweet.status_id}"}= tweet.body
+					- else
+						- if tweet.visible
+							!= tweet.body.gsub(/\n/, '<br>')
+						- else
+							.well!= tweet.body.gsub(/\n/, '<br>')
+				%td
+					%form.form-inline.pull-right{action:"/#{tweet.id}",method:'POST',style:'padding:0'}
+						%input{type:'hidden',name:'_method',value:'DELETE'}
+						%input.btn.btn-default{type:'submit',value:'delete'}
+				%td
+					%ul
+						%li= "created at: #{tweet.created_at}"
+						%li= "updated at: #{tweet.updated_at}"
+						%li= "published at: #{tweet.published_at}"
 :coffeescript
 	$('#tweet')
 		.focus()
